@@ -1,25 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
+import quotes from './quotes.json';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function QuoteGenerator() {
+	return (
+		<div>
+			<p>{quotes[0].quote}{quotes[0].author}</p>
+		</div>
+	);
 }
 
-export default App;
+function QuoteBox() {
+	return (
+		<div>
+			<QuoteGenerator />
+			<button>Generate Quote</button>
+			<button>facebook button</button>
+			<button>twitter button</button>
+		</div>
+	);
+}
+
+export default function App() {
+	return (
+		<div className="App">
+			<QuoteBox />
+		</div>
+	);
+}
