@@ -12,9 +12,12 @@ function QuoteDisplay( {quote} ) {
 		</div>
 	);
 }
-// Validates `QuoteDisplay` props `quote` that it is an object.
+// Validates `QuoteDisplay` props `quote` that it is an object or string.
 QuoteDisplay.propTypes = {
-	quote: PropTypes.object.isRequired
+	quote: PropTypes.oneOfType([
+		PropTypes.string.isRequired,
+		PropTypes.object.isRequired
+	])
 };
 
 // Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
@@ -29,10 +32,13 @@ function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 		</div>
 	);
 }
-// Validates `QuoteBox` props handleNewQuoteClick` that it is a function, and props `currentQuote` is an object.
+// Validates `QuoteBox` props handleNewQuoteClick` that it is a function, and props `currentQuote` is an object or string.
 QuoteBox.propTypes = {
 	handleNewQuoteClick: PropTypes.func.isRequired,
-	currentQuote: PropTypes.object.isRequired
+	currentQuote: PropTypes.oneOfType([
+		PropTypes.string.isRequired,
+		PropTypes.object.isRequired
+	])
 };
 
 // Creates a parent component `App` that keeps track of the overall state and handles the overall logic.
@@ -49,13 +55,38 @@ export default function App() {
 				const response = await fetch('./quotes.json');
 				// Creates const `quoteData` that will store quote data on response from API.
 				const quoteData = await response.json();
-				// Generates a random quote and assigns it to `currentQuote` state.
-				setCurrentQuoteAuthor(quoteData[Math.floor(Math.random() * quoteData.length)]);
+				// Checks if `quoteData` has any quotes stored in it.
+				if (!quoteData[0]) {
+					// Returns an error message if there are no quotes found in `quoteData`.
+					handleError('Uh oh! There are no quotes found. Please try again later!');
+					console.log('Error: Empty JSON File!');
+					return;
+				}
+				// Generates a random quote and assigns it to `newQuote`.
+				let initialQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
+				// Declares `iterationCount` to keep track of iterations in while loop for regenerating quote.
+				let iterationCount = 0;
+				// Regenerates a new random quote if quote found is null or empty.
+				while (initialQuote.quote === null || initialQuote.quote ===  '') {
+					// Iterates `iterationCount`.
+					iterationCount++;
+					// Logs an error to the console if an empty quote is found.
+					console.log('Error. Empty quote found Quote: ', initialQuote.quote, 'Index: ', quoteData.indexOf(initialQuote));
+					// Regenerates new quote and assigns it to `initialQuote`.
+					initialQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
+					// If iteration count exceeds length of `quoteData` an error is thrown as there are no quotes available.
+					if (iterationCount >= quoteData.length) {
+						handleError('Uh oh! There are no quotes found. Please try again later!');
+						return;
+					}
+				}
+				// Assignes `newQuote` to `currentQuote`.
+				return setCurrentQuoteAuthor(initialQuote);
 			} catch (error) {
 				// Logs an error to the console if API is unreachable.
 				console.log('Error retrieving quotes:', error);
 				// Sets `currentQuote` state to display an error message if API is unreachable.
-				setCurrentQuoteAuthor({quote: 'Uh oh! An error occured while retrieving quotes. Please try again later!', author: ''});
+				handleError('Uh oh! An error occured while retrieving quotes. Please try again later!');
 			}
 		}
 		// Calls our async function `fetchData`.
@@ -67,20 +98,43 @@ export default function App() {
 		try {
 			const response = await fetch('./quotes.json');
 			const quoteData = await response.json();
+			// Checks if `quoteData` has any quotes stored in it.
+			if (!quoteData[0]) {
+				// Returns an error message if there are no quotes found in `quoteData`.
+				handleError('Uh oh! There are no quotes found. Please try again later!');
+				console.log('Error: Empty JSON File!');
+				return;
+			}
 			// creates a const `newQuote` which will store our newly generated quote object from `quoteData`.
 			let newQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
-			// Generates a new quote if `newQuote` is same as the previous quote in state `currentQuoteAuthor` and overwrites it to `newQuote`.
-			while (newQuote.quote == currentQuoteAuthor.quote) {
+			// Declares `iterationCount` to keep track of iterations in while loop for regenerating quote.
+			let iterationCount = 0;
+			// Regenerates a new random quote if quote found is null or empty.
+			while (newQuote.quote === null || newQuote.quote ===  '') {
+				// Iterates `iterationCount`.
+				iterationCount++;
+				// Logs an error to the console if an empty quote is found.
+				console.log('Error. Empty quote found Quote: ', newQuote.quote, 'Index: ', quoteData.indexOf(newQuote));
+				// Regenerates new quote and assigns it to `newQuote`.
 				newQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
+				// If iteration count exceeds length of `quoteData` an error is thrown as there are no quotes available.
+				if (iterationCount >= quoteData.length) {
+					handleError('Uh oh! There are no quotes found. Please try again later!');
+					return;
+				}
 			}
-
-			// Updates `currentQuoteAuthor` state with our new random quote in `newQuote`.
-			setCurrentQuoteAuthor(newQuote);
+			// Assigns `newQuote` to `currentQuote`.
+			return setCurrentQuoteAuthor(newQuote);
 		} catch (error) {
 			// Logs to console an error message and updates `currentQuoteAuthor` with an error message if API is unreachable.
 			console.log('Error retrieving quotes:', error);
-			setCurrentQuoteAuthor({quote: 'Uh oh! An error occured while retrieving quotes. Please try again later!', author: ''});
+			handleError('Uh oh! An error occured while retrieving quotes. Please try again later!');
 		}
+	}
+	
+	// function to `handleError` messages.
+	function handleError(errorMessage) {
+		setCurrentQuoteAuthor({quote: errorMessage, author: ''});
 	}
 
 	// Returns a child element <QuoteBox /> where function `handleNewQuoteClick` and `currentQuote` is passed in as props
@@ -90,3 +144,5 @@ export default function App() {
 		</div>
 	);
 }
+
+
