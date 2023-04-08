@@ -43,10 +43,12 @@ QuoteBox.propTypes = {
 
 // Creates a parent component `App` that keeps track of the overall state and handles the overall logic.
 export default function App() {
+	// Creates `quotes` state to store quotes.
+	const [quotes, setQuotes] = useState('');
 	// Creates `currentQuoteAuthor` state to keep track of the current quote object which will store the quote and its author.
 	const [currentQuoteAuthor, setCurrentQuoteAuthor] = useState('');
 	
-	// Generates a quote on initialization of the app.
+	// Fetches data from API on initialization of the app, stores `quoteData` in `quotes` state and generates a random quote.
 	useEffect(() => {
 		// Creates an asynchronous function to fetch quote data from API.
 		async function fetchData() {
@@ -59,7 +61,6 @@ export default function App() {
 				if (!quoteData[0]) {
 					// Returns an error message if there are no quotes found in `quoteData`.
 					handleError('Uh oh! There are no quotes found. Please try again later!');
-					console.log('Error: Empty JSON File!');
 					return;
 				}
 				// Generates a random quote and assigns it to `newQuote`.
@@ -67,11 +68,11 @@ export default function App() {
 				// Declares `iterationCount` to keep track of iterations in while loop for regenerating quote.
 				let iterationCount = 0;
 				// Regenerates a new random quote if quote found is null or empty.
-				while (initialQuote.quote === null || initialQuote.quote ===  '') {
+				while (!initialQuote.quote) {
 					// Iterates `iterationCount`.
 					iterationCount++;
 					// Logs an error to the console if an empty quote is found.
-					console.log('Error. Empty quote found Quote: ', initialQuote.quote, 'Index: ', quoteData.indexOf(initialQuote));
+					console.log('Error. Empty quote found Quote: ', initialQuote.quote, '\nIndex: ', quoteData.indexOf(initialQuote));
 					// Regenerates new quote and assigns it to `initialQuote`.
 					initialQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
 					// If iteration count exceeds length of `quoteData` an error is thrown as there are no quotes available.
@@ -80,11 +81,11 @@ export default function App() {
 						return;
 					}
 				}
-				// Assignes `newQuote` to `currentQuote`.
-				return setCurrentQuoteAuthor(initialQuote);
+				// Assigns `newQuote` to `currentQuote`.
+				setCurrentQuoteAuthor(initialQuote);
+				// Stores `quoteData` to `quotes` state.
+				return setQuotes(quoteData);
 			} catch (error) {
-				// Logs an error to the console if API is unreachable.
-				console.log('Error retrieving quotes:', error);
 				// Sets `currentQuote` state to display an error message if API is unreachable.
 				handleError('Uh oh! An error occured while retrieving quotes. Please try again later!');
 			}
@@ -94,47 +95,37 @@ export default function App() {
 	}, []);
 
 	// Generates a new quote when user clicks on generate quote button.
-	async function handleNewQuoteClick() {
-		try {
-			const response = await fetch('./quotes.json');
-			const quoteData = await response.json();
-			// Checks if `quoteData` has any quotes stored in it.
-			if (!quoteData[0]) {
-				// Returns an error message if there are no quotes found in `quoteData`.
-				handleError('Uh oh! There are no quotes found. Please try again later!');
-				console.log('Error: Empty JSON File!');
-				return;
-			}
-			// creates a const `newQuote` which will store our newly generated quote object from `quoteData`.
-			let newQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
-			// Declares `iterationCount` to keep track of iterations in while loop for regenerating quote.
-			let iterationCount = 0;
-			// Regenerates a new random quote if quote found is null or empty.
-			while (newQuote.quote === null || newQuote.quote ===  '') {
-				// Iterates `iterationCount`.
-				iterationCount++;
-				// Logs an error to the console if an empty quote is found.
-				console.log('Error. Empty quote found Quote: ', newQuote.quote, 'Index: ', quoteData.indexOf(newQuote));
-				// Regenerates new quote and assigns it to `newQuote`.
-				newQuote = quoteData[Math.floor(Math.random() * quoteData.length)];
-				// If iteration count exceeds length of `quoteData` an error is thrown as there are no quotes available.
-				if (iterationCount >= quoteData.length) {
-					handleError('Uh oh! There are no quotes found. Please try again later!');
-					return;
-				}
-			}
-			// Assigns `newQuote` to `currentQuote`.
-			return setCurrentQuoteAuthor(newQuote);
-		} catch (error) {
-			// Logs to console an error message and updates `currentQuoteAuthor` with an error message if API is unreachable.
-			console.log('Error retrieving quotes:', error);
-			handleError('Uh oh! An error occured while retrieving quotes. Please try again later!');
+	function handleNewQuoteClick() {
+		// Checks if `quotes` has any quotes stored in it.
+		if (!quotes[0]) {
+			// Returns an error message if there are no quotes found in `quotes`.
+			return handleError('Uh oh! There are no quotes found. Please try again later!');
 		}
+		// creates a const `newQuote` which will store our newly generated quote object from `quote`.
+		let newQuote = quotes[Math.floor(Math.random() * quotes.length)];
+		// Declares `iterationCount` to keep track of iterations in while loop for regenerating quote.
+		let iterationCount = 0;
+		// Regenerates a new random quote if quote found is null or empty.
+		while (!newQuote.quote) {
+			// Iterates `iterationCount`.
+			iterationCount++;
+			// Logs an error to the console if an empty quote is found.
+			console.log('Error. Empty quote found Quote: ', newQuote.quote, 'Index: ', quotes.indexOf(newQuote));
+			// Regenerates new quote and assigns it to `newQuote`.
+			newQuote = quotes[Math.floor(Math.random() * quotes.length)];
+			// If iteration count exceeds length of `quotes` an error is thrown as there are no quotes available.
+			if (iterationCount >= quotes.length) {
+				return handleError('Uh oh! There are no quotes found. Please try again later!');
+			}
+		}
+		// Assigns `newQuote` to `currentQuote`.
+		return setCurrentQuoteAuthor(newQuote);
 	}
 	
-	// function to `handleError` messages.
+	// Function to `handleError` messages.
 	function handleError(errorMessage) {
 		setCurrentQuoteAuthor({quote: errorMessage, author: ''});
+		throw new Error('Warning! Error occured at line: ' + new Error().lineNumber);
 	}
 
 	// Returns a child element <QuoteBox /> where function `handleNewQuoteClick` and `currentQuote` is passed in as props
@@ -144,5 +135,3 @@ export default function App() {
 		</div>
 	);
 }
-
-
