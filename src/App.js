@@ -99,14 +99,14 @@ export default function App() {
 
 	// Generates a new quote when user clicks on generate quote button.
 	function handleNewQuoteClick() {
-		// Checks if `quoteData` has any quotes stored in it.
+		// Checks if `quotes` has any quotes stored in it.
 		if (!quotes[0]) {
-			// Returns an error message if there are no quotes found in `quoteData`.
+			// Returns an error message if there are no quotes found in `quotes`.
 			handleError('Uh oh! There are no quotes found. Please try again later!');
 			console.log('Error: Empty JSON File!');
 			return;
 		}
-		// creates a const `newQuote` which will store our newly generated quote object from `quoteData`.
+		// creates a const `newQuote` which will store our newly generated quote object from `quote`.
 		let newQuote = quotes[Math.floor(Math.random() * quotes.length)];
 		// Declares `iterationCount` to keep track of iterations in while loop for regenerating quote.
 		let iterationCount = 0;
@@ -118,7 +118,7 @@ export default function App() {
 			console.log('Error. Empty quote found Quote: ', newQuote.quote, 'Index: ', quotes.indexOf(newQuote));
 			// Regenerates new quote and assigns it to `newQuote`.
 			newQuote = quotes[Math.floor(Math.random() * quotes.length)];
-			// If iteration count exceeds length of `quoteData` an error is thrown as there are no quotes available.
+			// If iteration count exceeds length of `quotes` an error is thrown as there are no quotes available.
 			if (iterationCount >= quotes.length) {
 				handleError('Uh oh! There are no quotes found. Please try again later!');
 				return;
