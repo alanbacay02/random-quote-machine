@@ -1,34 +1,22 @@
 import './App.css';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-
-// Creates a component `QuoteDisplay` that accepts an object `quote` as props.
-function QuoteDisplay( {quote} ) {
-	// Returns two paragraph elements where `quote.quote` is our quote to display and `quote.author` is the author of the quote.
-	return (
-		<div>
-			<p>{quote.quote}</p>
-			<p> - {quote.author}</p>
-		</div>
-	);
-}
-// Validates `QuoteDisplay` props `quote` that it is an object or string.
-QuoteDisplay.propTypes = {
-	quote: PropTypes.oneOfType([
-		PropTypes.string.isRequired,
-		PropTypes.object.isRequired
-	])
-};
+import { FaQuoteLeft } from 'react-icons/fa';
 
 // Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
 function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 	// Returns a child element `QuoteDisplay` with props `quote`, and three button elements.
 	return (
-		<div>
-			<QuoteDisplay quote={currentQuote} />
-			<button onClick={handleNewQuoteClick}>Generate Quote</button>
-			<button>facebook button</button>
-			<button>twitter button</button>
+		<div className="p-4">
+			<div id="quote-box" className="flex flex-col w-sm max-w-xl mx-auto mt-64 justify-center items-center rounded-sm">
+				<div id="quote" className="flex flex-row text-center mx-auto">
+					<FaQuoteLeft className="text-[13px] px-[2px] md:text-base"/>
+					<p id="text" className="text-sm px-0 mx-0 md:text-base xl:text-2xl">{currentQuote.quote}</p>
+				</div>
+				<p id="author" className=''> - {currentQuote.author}</p>
+				<button id="new-quote" onClick={handleNewQuoteClick} className=''>Generate Quote</button>
+				<a id="tweet-quote" href="https://twitter.com/intent/tweet" rel="noreferrer" target="_blank">Twitter</a>
+			</div>
 		</div>
 	);
 }
