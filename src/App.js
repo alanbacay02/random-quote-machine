@@ -122,7 +122,7 @@ export default function App() {
 		return setCurrentQuoteAuthor(newQuote);
 	}
 	
-	// function to `handleError` messages.
+	// Function to `handleError` messages.
 	function handleError(errorMessage) {
 		setCurrentQuoteAuthor({quote: errorMessage, author: ''});
 		throw new Error('Warning! Error occured at line: ' + new Error().lineNumber);
