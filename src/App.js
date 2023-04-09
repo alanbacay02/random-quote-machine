@@ -1,21 +1,26 @@
 import './App.css';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { FaQuoteLeft } from 'react-icons/fa';
 
 // Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
 function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 	// Returns a child element `QuoteDisplay` with props `quote`, and three button elements.
 	return (
-		<div className="p-4">
-			<div id="quote-box" className="flex flex-col w-sm max-w-xl mx-auto mt-64 justify-center items-center rounded-sm">
-				<div id="quote" className="flex flex-row text-center mx-auto">
-					<FaQuoteLeft className="text-[13px] px-[2px] md:text-base"/>
-					<p id="text" className="text-sm px-0 mx-0 md:text-base xl:text-2xl">{currentQuote.quote}</p>
+		<div className="p-4 mt-48">
+			<div id="quote-box" className="flex flex-col w-sm max-w-xl rounded-md mx-auto text-center">
+				<div id="quote" className="flex flex-row justify-center px-4 pt-3 pb-2 m-0 break-words">
+
+					<p id="text" className="text-[20px] md:text-base m-0"><i className="fa fa-quote-left"></i> {currentQuote.quote}</p>
 				</div>
-				<p id="author" className=''> - {currentQuote.author}</p>
-				<button id="new-quote" onClick={handleNewQuoteClick} className=''>Generate Quote</button>
-				<a id="tweet-quote" href="https://twitter.com/intent/tweet" rel="noreferrer" target="_blank">Twitter</a>
+				<div className="flex flex-row justify-end pt-0 pr-4 pb-3">
+					<p id="author" className="text-[15px]">{currentQuote.author}</p>
+				</div>
+				<div className="flex flex-row justify-between py-3 px-3 m-0">
+					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote + ' - ' + currentQuote.author}`} rel="noreferrer" target="_blank">
+						<i className="fa-brands fa-twitter"></i>
+					</a>
+					<button id="new-quote" onClick={handleNewQuoteClick}>Generate Quote</button>
+				</div>
 			</div>
 		</div>
 	);
