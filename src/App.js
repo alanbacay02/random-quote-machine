@@ -8,12 +8,11 @@ function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 	return (
 		<div className="p-4 mt-48">
 			<div id="quote-box" className="flex flex-col w-sm max-w-xl rounded-md mx-auto text-center">
-				<div id="quote" className="flex flex-row justify-center px-4 pt-3 pb-2 m-0 break-words">
-
-					<p id="text" className="text-[20px] md:text-base m-0"><i className="fa fa-quote-left"></i> {currentQuote.quote}</p>
+				<div id="quote" className="flex flex-row justify-center px-5 pt-3 pb-1 m-0 break-words">
+					<p id="text" className="text-[20px] md:text-[23px] m-0"><i className="fa fa-quote-left"></i> {currentQuote.quote}</p>
 				</div>
-				<div className="flex flex-row justify-end pt-0 pr-4 pb-3">
-					<p id="author" className="text-[15px]">{currentQuote.author}</p>
+				<div className="flex flex-row justify-end pt-0 pr-10 pb-3">
+					<p id="author" className="text-[15px]"> - {currentQuote.author}</p>
 				</div>
 				<div className="flex flex-row justify-between py-3 px-3 m-0">
 					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote + ' - ' + currentQuote.author}`} rel="noreferrer" target="_blank">
@@ -74,8 +73,9 @@ export default function App() {
 						return;
 					}
 				}
-				// Assigns `newQuote` to `currentQuote`.
+				// Assigns `initialQuote` to `currentQuote`.
 				setCurrentQuoteAuthor(initialQuote);
+				console.log(initialQuote);
 				// Stores `quoteData` to `quotes` state.
 				return setQuotes(quoteData);
 			} catch (error) {
@@ -128,3 +128,9 @@ export default function App() {
 		</div>
 	);
 }
+
+/**
+ * ToDo:
+ *  - Add footer
+ *  - Change color on button click
+ */
