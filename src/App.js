@@ -5,33 +5,33 @@ import { useState, useEffect } from 'react';
 // Creates an array `colorArray` used to store different color styles for the app and its elements.
 const colorArray = [
 	{ 
-		color: 'bg-red-500',
+		color: 'red-500',
 		textColor: 'text-red-500'
 	},
 	{ 
-		color: 'bg-blue-400',
+		color: 'blue-400',
 		textColor: 'text-blue-500'
 	},
 	{ 
-		color: 'bg-yellow-400',
+		color: 'yellow-400',
 		textColor: 'text-yellow-500'
 	},
 	{ 
-		color: 'bg-green-600',
+		color: 'green-600',
 		textColor: 'text-green-600'
 	},
 	{ 
-		color: 'bg-indigo-500',
+		color: 'indigo-500',
 		textColor: 'text-indigo-500'
 	},
 	{ 
-		color: 'bg-purple-500',
+		color: 'purple-500',
 		textColor: 'text-purple-500'
 	},
 ];
 
 // Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
-function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
+function QuoteBox( {handleNewQuoteClick, currentQuote, appColor} ) {
 	// Returns a child element `QuoteDisplay` with props `quote`, and three button elements.
 	return (
 		<div className="p-4 mt-48 lg:mt-44">
@@ -43,13 +43,13 @@ function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 					<p id="author" className="text-[15px] md:text-[19px] xl:text-[20px]"> - {currentQuote.author}</p>
 				</div>
 				<div className="flex flex-row justify-between p-6 m-0">
-					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote} - ${currentQuote.author}`} rel="noreferrer" target="_blank">
-						<i className="fa-brands fa-twitter text-[20px]"></i>
+					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote} - ${currentQuote.author}`} rel="noreferrer" target="_blank" className={`text-[18px] item-center py-1 px-2 rounded-md bg-${appColor.color} text-white`}>
+						<i className="fa-brands fa-twitter"></i>
 					</a>
-					<button id="new-quote" onClick={handleNewQuoteClick}>Generate Quote</button>
+					<button id="new-quote" className={`text-[18px] py-1 px-2 rounded-md bg-${appColor.color} text-white`} onClick={handleNewQuoteClick}>New Quote</button>
 				</div>
 			</div>
-			<div className="flex flex-col max-w-xl justify-center mx-auto mt-2">
+			<div className="flex max-w-xl justify-center mx-auto my-2">
 				<a href="https://alanbacay.dev/" rel="noreferrer" target="_blank" className="text-white text-center text-[16px]">By Alan</a>
 			</div>
 			
@@ -62,7 +62,11 @@ QuoteBox.propTypes = {
 	currentQuote: PropTypes.oneOfType([
 		PropTypes.string.isRequired,
 		PropTypes.object.isRequired
-	])
+	]),
+	appColor: PropTypes.oneOfType([
+		PropTypes.string.isRequired,
+		PropTypes.object.isRequired
+	]),
 };
 
 // Creates a parent component `App` that keeps track of the overall state and handles the overall logic.
@@ -74,7 +78,7 @@ export default function App() {
 	// Creates `appColor` state to keep track of components color. Color is randomly generated from `colorArray`.
 	const [appColor, setAppColor] = useState(colorArray[Math.floor(Math.random() * colorArray.length)]);
 	// Sets body color and text color to values from `appColor` state.
-	document.body.className = `${appColor['color']} ${appColor['textColor']}`;
+	document.body.className = `bg-${appColor['color']} ${appColor['textColor']}`;
 
 	// Fetches data from API on initialization of the app, stores `quoteData` in `quotes` state and generates a random quote.
 	useEffect(() => {
@@ -162,7 +166,7 @@ export default function App() {
 	// Returns a child element <QuoteBox /> where function `handleNewQuoteClick` and `currentQuote` is passed in as props
 	return (
 		<div className="App">
-			<QuoteBox handleNewQuoteClick={handleNewQuoteClick} currentQuote={currentQuoteAuthor}/>
+			<QuoteBox handleNewQuoteClick={handleNewQuoteClick} currentQuote={currentQuoteAuthor} appColor={appColor}/>
 		</div>
 	);
 }
