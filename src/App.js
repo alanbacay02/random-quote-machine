@@ -15,8 +15,8 @@ function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 					<p id="author" className="text-[15px] md:text-[19px] xl:text-[20px]"> - {currentQuote.author}</p>
 				</div>
 				<div className="flex flex-row justify-between py-4 px-4 m-0">
-					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote + ' - ' + currentQuote.author}`} rel="noreferrer" target="_blank">
-						<i className="fa-brands fa-twitter"></i>
+					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote} - ${currentQuote.author}`} rel="noreferrer" target="_blank">
+						<i className="fa-brands fa-twitter text-[20px]"></i>
 					</a>
 					<button id="new-quote" onClick={handleNewQuoteClick}>Generate Quote</button>
 				</div>
@@ -36,13 +36,13 @@ QuoteBox.propTypes = {
 // Creates a parent component `App` that keeps track of the overall state and handles the overall logic.
 export default function App() {
 	// Creates `quotes` state to store quotes.
-	const [quotes, setQuotes] = useState('');
+	const [quotes, setQuotes] = useState([]);
 	// Creates `currentQuoteAuthor` state to keep track of the current quote object which will store the quote and its author.
-	const [currentQuoteAuthor, setCurrentQuoteAuthor] = useState('');
+	const [currentQuoteAuthor, setCurrentQuoteAuthor] = useState({});
 	
 	// Fetches data from API on initialization of the app, stores `quoteData` in `quotes` state and generates a random quote.
 	useEffect(() => {
-		// Creates an asynchronous function to fetch quote data from API.
+	// Creates an asynchronous function to fetch quote data from API.
 		async function fetchData() {
 			try {
 				// Creates const `response` to fetch data from API.
