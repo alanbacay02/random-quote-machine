@@ -2,25 +2,57 @@ import './App.css';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 
+// Creates an array `colorArray` used to store different color styles for the app and its elements.
+const colorArray = [
+	{ 
+		color: 'bg-red-500',
+		textColor: 'text-red-500'
+	},
+	{ 
+		color: 'bg-blue-400',
+		textColor: 'text-blue-500'
+	},
+	{ 
+		color: 'bg-yellow-400',
+		textColor: 'text-yellow-500'
+	},
+	{ 
+		color: 'bg-green-600',
+		textColor: 'text-green-600'
+	},
+	{ 
+		color: 'bg-indigo-500',
+		textColor: 'text-indigo-500'
+	},
+	{ 
+		color: 'bg-purple-500',
+		textColor: 'text-purple-500'
+	},
+];
+
 // Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
 function QuoteBox( {handleNewQuoteClick, currentQuote} ) {
 	// Returns a child element `QuoteDisplay` with props `quote`, and three button elements.
 	return (
 		<div className="p-4 mt-48 lg:mt-44">
-			<div id="quote-box" className="flex flex-col max-w-xl rounded-md mx-auto text-center">
-				<div id="quote" className="flex flex-row justify-center px-5 pt-3 pb-1 m-0 break-words">
+			<div id="quote-box" className="flex flex-col max-w-xl rounded-md mx-auto text-center bg-white">
+				<div id="quote" className="flex flex-row justify-center p-7 pb-1 m-0 break-words">
 					<p id="text" className="text-[19px] md:text-[23px] xl:text-[26px] m-0"><i className="fa fa-quote-left"></i> {currentQuote.quote}</p>
 				</div>
-				<div className="flex flex-row justify-end pt-0 pr-10 pb-3 xl:pt-1">
+				<div className="flex flex-row justify-end pr-10 pb-3 xl:pt-1">
 					<p id="author" className="text-[15px] md:text-[19px] xl:text-[20px]"> - {currentQuote.author}</p>
 				</div>
-				<div className="flex flex-row justify-between py-4 px-4 m-0">
+				<div className="flex flex-row justify-between p-6 m-0">
 					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote} - ${currentQuote.author}`} rel="noreferrer" target="_blank">
 						<i className="fa-brands fa-twitter text-[20px]"></i>
 					</a>
 					<button id="new-quote" onClick={handleNewQuoteClick}>Generate Quote</button>
 				</div>
 			</div>
+			<div className="flex flex-col max-w-xl justify-center mx-auto mt-2">
+				<a href="https://alanbacay.dev/" rel="noreferrer" target="_blank" className="text-white text-center text-[16px]">By Alan</a>
+			</div>
+			
 		</div>
 	);
 }
@@ -39,10 +71,14 @@ export default function App() {
 	const [quotes, setQuotes] = useState([]);
 	// Creates `currentQuoteAuthor` state to keep track of the current quote object which will store the quote and its author.
 	const [currentQuoteAuthor, setCurrentQuoteAuthor] = useState({});
-	
+	// Creates `appColor` state to keep track of components color. Color is randomly generated from `colorArray`.
+	const [appColor, setAppColor] = useState(colorArray[Math.floor(Math.random() * colorArray.length)]);
+	// Sets body color and text color to values from `appColor` state.
+	document.body.className = `${appColor['color']} ${appColor['textColor']}`;
+
 	// Fetches data from API on initialization of the app, stores `quoteData` in `quotes` state and generates a random quote.
 	useEffect(() => {
-	// Creates an asynchronous function to fetch quote data from API.
+		// Creates an asynchronous function to fetch quote data from API.
 		async function fetchData() {
 			try {
 				// Creates const `response` to fetch data from API.
@@ -111,6 +147,8 @@ export default function App() {
 				return handleError('Uh oh! There are no quotes found. Please try again later!');
 			}
 		}
+		// Generates a new random color and assigns it to `appColor` state.
+		setAppColor(colorArray[Math.floor(Math.random() * colorArray.length)]);
 		// Assigns `newQuote` to `currentQuote`.
 		return setCurrentQuoteAuthor(newQuote);
 	}
