@@ -5,29 +5,29 @@ import { useState, useEffect } from 'react';
 // Creates an array `colorArray` used to store different color styles for the app and its elements.
 const colorArray = [
 	{ 
-		color: 'red-500',
-		textColor: 'text-red-500'
+		// red
+		backgroundColor: '#ef4444'
 	},
 	{ 
-		color: 'blue-400',
-		textColor: 'text-blue-500'
+		// blue
+		backgroundColor: '#4792f5'
 	},
 	{ 
-		color: 'yellow-400',
-		textColor: 'text-yellow-500'
+		// yellow
+		backgroundColor: '#facc15'
 	},
 	{ 
-		color: 'green-600',
-		textColor: 'text-green-600'
+		// green
+		backgroundColor: '#16a34a'
 	},
 	{ 
-		color: 'indigo-500',
-		textColor: 'text-indigo-500'
+		// indigo
+		backgroundColor: '#6366f1'
 	},
 	{ 
-		color: 'purple-500',
-		textColor: 'text-purple-500'
-	},
+		// purple
+		backgroundColor: '#a855f7'
+	}
 ];
 
 // Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
@@ -42,17 +42,16 @@ function QuoteBox( {handleNewQuoteClick, currentQuote, appColor} ) {
 				<div className="flex flex-row justify-end pr-10 pb-3 xl:pt-1">
 					<p id="author" className="text-[15px] md:text-[19px] xl:text-[20px]"> - {currentQuote.author}</p>
 				</div>
-				<div className="flex flex-row justify-between p-6 m-0">
-					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote} - ${currentQuote.author}`} rel="noreferrer" target="_blank" className={`text-[18px] item-center py-1 px-2 rounded-md bg-${appColor.color} text-white`}>
+				<div className="flex flex-row justify-between p-4 m-0">
+					<a id="tweet-quote" href={`https://twitter.com/intent/tweet?text=${currentQuote.quote} - ${currentQuote.author}`} rel="noreferrer" target="_blank" className="text-[15px] md:text-[18px] item-center py-1 px-2 rounded-md text-white transition-colors duration-[1500ms]" style={appColor}>
 						<i className="fa-brands fa-twitter"></i>
 					</a>
-					<button id="new-quote" className={`text-[18px] py-1 px-2 rounded-md bg-${appColor.color} text-white`} onClick={handleNewQuoteClick}>New Quote</button>
+					<button id="new-quote" className="text-[15px] md:text-[18px] py-1 px-2 rounded-md text-white transition-colors duration-[1500ms]" style={appColor} onClick={handleNewQuoteClick}>New Quote</button>
 				</div>
 			</div>
 			<div className="flex max-w-xl justify-center mx-auto my-2">
-				<a href="https://alanbacay.dev/" rel="noreferrer" target="_blank" className="text-white text-center text-[16px]">By Alan</a>
+				<a href="https://alanbacay.dev/" rel="noreferrer" target="_blank" className="text-center text-[16px] text-white">By Alan</a>
 			</div>
-			
 		</div>
 	);
 }
@@ -77,8 +76,10 @@ export default function App() {
 	const [currentQuoteAuthor, setCurrentQuoteAuthor] = useState({});
 	// Creates `appColor` state to keep track of components color. Color is randomly generated from `colorArray`.
 	const [appColor, setAppColor] = useState(colorArray[Math.floor(Math.random() * colorArray.length)]);
-	// Sets body color and text color to values from `appColor` state.
-	document.body.className = `bg-${appColor['color']} ${appColor['textColor']}`;
+	// Sets body color and text color to values from `appColor` state. There is a problem with tailwind css not rendering update onClick so default css is used.
+	document.body.style = `background-color: ${appColor.backgroundColor}; color: ${appColor.backgroundColor};`;
+	// Using tailwind, sets a transition between colors and assigns it to body `className`.
+	document.body.className = 'transition-colors duration-[1500ms]';
 
 	// Fetches data from API on initialization of the app, stores `quoteData` in `quotes` state and generates a random quote.
 	useEffect(() => {
@@ -115,7 +116,6 @@ export default function App() {
 				}
 				// Assigns `initialQuote` to `currentQuote`.
 				setCurrentQuoteAuthor(initialQuote);
-				console.log(initialQuote);
 				// Stores `quoteData` to `quotes` state.
 				return setQuotes(quoteData);
 			} catch (error) {
@@ -151,8 +151,14 @@ export default function App() {
 				return handleError('Uh oh! There are no quotes found. Please try again later!');
 			}
 		}
-		// Generates a new random color and assigns it to `appColor` state.
-		setAppColor(colorArray[Math.floor(Math.random() * colorArray.length)]);
+		// Generates a new app color and assigns it to `newAppColor`.
+		let newAppColor = colorArray[Math.floor(Math.random() * colorArray.length)];
+		// Checks if `newAppColor` is equal to the previous `appColor` and generate new one while true.
+		while (appColor === newAppColor) {
+			newAppColor = colorArray[Math.floor(Math.random() * colorArray.length)];
+		}
+		// Assigns `newAppColor` to `appColor` state.
+		setAppColor(newAppColor);
 		// Assigns `newQuote` to `currentQuote`.
 		return setCurrentQuoteAuthor(newQuote);
 	}
@@ -170,9 +176,3 @@ export default function App() {
 		</div>
 	);
 }
-
-/**
- * ToDo:
- *  - Add footer
- *  - Change color on button click
- */
