@@ -27,6 +27,10 @@ const colorArray = [
 	{ 
 		// purple
 		backgroundColor: '#a855f7'
+	},
+	{
+		// light green
+		backgroundColor: '#27c28e'
 	}
 ];
 
