@@ -14,7 +14,7 @@ const colorArray = [
 	},
 	{ 
 		// yellow
-		backgroundColor: '#facc15'
+		backgroundColor: '#d1ab13'
 	},
 	{ 
 		// green
@@ -49,14 +49,10 @@ function QuoteBox( {handleNewQuoteClick, currentQuote, appColor} ) {
 					<button id="new-quote" className="text-[15px] md:text-[18px] py-1 px-2 rounded-md text-white transition-colors duration-[1500ms]" style={appColor} onClick={handleNewQuoteClick}>New Quote</button>
 				</div>
 			</div>
-			<div className="flex max-w-xl justify-end mx-auto my-3 opacity-80">
-				<div className="text-center text-[20px]">
-					<a href="https://github.com/alanbacay02" rel="noreferrer" target="blank" className="mr-[2px] px-1 rounded-md border-white bg-white"><i className="fa-brands fa-github"></i></a>
-					<a href="https://www.linkedin.com/in/alan-neale-bacay-ii-60aa48258/" rel="noreferrer" target="_blank" className="ml-[2px] px-1 rounded-md border-white bg-white"><i className="fa-brands fa-linkedin-in"></i></a>
-				</div>
-				<div className="text-center mt-auto px-1">
-					<a href="https://alanbacay.dev/" rel="noreferrer" target="_blank" className="text-[15px] text-white">©alanbacay</a>
-				</div>
+			<div className="flex max-w-xl justify-end space-x-1 mx-auto my-2 pr-2 opacity-80">
+				<a href="https://alanbacay.dev/" rel="noreferrer" target="_blank" className="text-[15px] text-white mt-0 pt-0">©alanbacay</a>
+				<a href="https://github.com/alanbacay02" rel="noreferrer" target="blank" className="text-[18px] px-1 rounded-md bg-white"><i className="fa-brands fa-github"></i></a>
+				<a href="https://www.linkedin.com/in/alan-neale-bacay-ii-60aa48258/" rel="noreferrer" target="_blank" className="text-[18px] px-1 rounded-md bg-white"><i className="fa-brands fa-linkedin-in"></i></a>
 			</div>
 		</div>
 	);
