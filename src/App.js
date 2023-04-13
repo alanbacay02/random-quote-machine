@@ -30,16 +30,16 @@ const colorArray = [
 	}
 ];
 
-// Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function and `currentQuote` which is an object.
-function QuoteBox( {handleNewQuoteClick, currentQuote, appColor} ) {
+// Creates a function `QuoteBox` that accepts props `handleNewQuoteClick` which is a function, `currentQuote` which is an object, and `fadeState` which is a string used to apply a class name to components.
+function QuoteBox( {handleNewQuoteClick, currentQuote, appColor, fadeState} ) {
 	// Returns a child element `QuoteDisplay` with props `quote`, and three button elements.
 	return (
 		<div className="p-4 mt-48 lg:mt-44">
 			<div id="quote-box" className="flex flex-col max-w-xl rounded-md mx-auto text-center bg-white">
-				<div id="quote" className="flex flex-row justify-center p-7 pb-1 m-0 break-words">
+				<div id="quote" className={`fade-wrapper ${fadeState} flex flex-row justify-center p-7 pb-1 m-0 break-words`}>
 					<p id="text" className="text-[19px] md:text-[23px] xl:text-[26px] m-0"><i className="fa fa-quote-left"></i> {currentQuote.quote}</p>
 				</div>
-				<div className="flex flex-row justify-end pr-10 pb-3 xl:pt-1">
+				<div className={`fade-wrapper ${fadeState} flex flex-row justify-end pr-10 pb-3 xl:pt-1`}>
 					<p id="author" className="text-[15px] md:text-[19px] xl:text-[20px]"> - {currentQuote.author}</p>
 				</div>
 				<div className="flex flex-row justify-between p-4 m-0">
@@ -68,6 +68,7 @@ QuoteBox.propTypes = {
 		PropTypes.string.isRequired,
 		PropTypes.object.isRequired
 	]),
+	fadeState: PropTypes.string.isRequired
 };
 
 // Creates a parent component `App` that keeps track of the overall state and handles the overall logic.
@@ -78,6 +79,10 @@ export default function App() {
 	const [currentQuoteAuthor, setCurrentQuoteAuthor] = useState({});
 	// Creates `appColor` state to keep track of components color. Color is randomly generated from `colorArray`.
 	const [appColor, setAppColor] = useState(colorArray[Math.floor(Math.random() * colorArray.length)]);
+	// creates `isFading` to handle fade status.
+	const [isFading, setIsFading] = useState(false);
+	// creates `fadeTransition` to hande fade transition property.
+	const [fadeTransition, setFadeTransition] = useState('fade-in');
 	// Sets body color and text color to values from `appColor` state. There is a problem with tailwind css not rendering update onClick so default css is used.
 	document.body.style = `background-color: ${appColor.backgroundColor}; color: ${appColor.backgroundColor};`;
 	// Using tailwind, sets a transition between colors and assigns it to body `className`.
@@ -116,10 +121,20 @@ export default function App() {
 						return;
 					}
 				}
-				// Assigns `initialQuote` to `currentQuote`.
-				setCurrentQuoteAuthor(initialQuote);
-				// Stores `quoteData` to `quotes` state.
-				return setQuotes(quoteData);
+				// Sets `isFading` to true to prevent user from changing quotes during transition.
+				setIsFading(true);
+				setTimeout(() => {
+					// Assigns `initialQuote` to `currentQuote`.
+					setCurrentQuoteAuthor(initialQuote);
+					// Stores `quoteData` to `quotes` state.
+					setQuotes(quoteData);
+					// Sets `fadeTransition` value to `fade-in`.
+					setFadeTransition('fade-in');
+					// Sets `isFading` to false.
+					setIsFading(false);
+				}, 1000);
+				// Sets `fadeTransition` value to `fade-out`.
+				return setFadeTransition('fade-out');
 			} catch (error) {
 				// Sets `currentQuote` state to display an error message if API is unreachable.
 				handleError('Uh oh! An error occured while retrieving quotes. Please try again later!');
@@ -131,6 +146,12 @@ export default function App() {
 
 	// Generates a new quote when user clicks on generate quote button.
 	function handleNewQuoteClick() {
+		// Checks if quote and author text is still transitioning.
+		if (isFading) {
+			return;
+		}
+		// Sets `isFading` to true to prevent user from chaning quotes mid transition.
+		setIsFading(true);
 		// Checks if `quotes` has any quotes stored in it.
 		if (!quotes[0]) {
 			// Returns an error message if there are no quotes found in `quotes`.
@@ -161,8 +182,16 @@ export default function App() {
 		}
 		// Assigns `newAppColor` to `appColor` state.
 		setAppColor(newAppColor);
-		// Assigns `newQuote` to `currentQuote`.
-		return setCurrentQuoteAuthor(newQuote);
+		setTimeout(() => {
+			// Assigns `newQuote` to `currentQuote`.
+			setCurrentQuoteAuthor(newQuote);
+			// Sets `fadeTransition` value to `fade-in`.
+			setFadeTransition('fade-in');
+			// Sets `isFading` to false.
+			setIsFading(false);
+		}, 1000);
+		// Sets `fadeTransition` value to `fade-out`.
+		setFadeTransition('fade-out');
 	}
 	
 	// Function to `handleError` messages.
@@ -171,10 +200,10 @@ export default function App() {
 		throw new Error('Warning! Error occured at line: ' + new Error().lineNumber);
 	}
 
-	// Returns a child element <QuoteBox /> where function `handleNewQuoteClick` and `currentQuote` is passed in as props
+	// Returns a child element <QuoteBox /> where function `handleNewQuoteClick`, `currentQuote` is passed in as props and `fadeState` which is a string used to apply a class name to components.
 	return (
 		<div className="App">
-			<QuoteBox handleNewQuoteClick={handleNewQuoteClick} currentQuote={currentQuoteAuthor} appColor={appColor}/>
+			<QuoteBox handleNewQuoteClick={handleNewQuoteClick} currentQuote={currentQuoteAuthor} appColor={appColor} fadeState={fadeTransition}/>
 		</div>
 	);
 }
